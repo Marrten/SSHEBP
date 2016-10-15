@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>EBP</display-name>
+
+  <filter>
+  	<filter-name>AdminLoginFilter</filter-name>
+  	<filter-class>com.ebp.web.AdminLoginFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>AdminLoginFilter</filter-name>
+  	<url-pattern>/admin/*</url-pattern>
+  	<url-pattern>/admin/AdminUserList.action</url-pattern>
+  	<url-pattern>/admin/AdminOrders.action</url-pattern>
+  	<url-pattern>/admin/AdminSearchOrderList.action</url-pattern>
+  	<url-pattern>/admin/AdminSearchUser.action</url-pattern>
+  	<dispatcher>REQUEST</dispatcher>
+	<dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>/WEB-INF/ApplicationContext.xml</param-value>
+  </context-param> 
+  
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <filter>
+      <filter-name>LoginFilter</filter-name>
+      <filter-class>com.ebp.web.LoginFilter</filter-class>
+  </filter>
+ 
+  <filter-mapping>
+      <filter-name>LoginFilter</filter-name>
+      <url-pattern>/ebp/Shopping.action</url-pattern>
+      <url-pattern>/ebp/personal.jsp</url-pattern>
+      <url-pattern>/ebp/orders.jsp</url-pattern>
+      <url-pattern>/ebp/userbalance.jsp</url-pattern>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+  <filter>
+      <filter-name>struts2</filter-name>
+      <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+ 
+  <filter-mapping>
+      <filter-name>struts2</filter-name>
+      <url-pattern>/*</url-pattern>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+  <welcome-file-list>
+  	<welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+ 
+</web-app>

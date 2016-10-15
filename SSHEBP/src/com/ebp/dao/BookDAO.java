@@ -1,0 +1,147 @@
+package com.ebp.dao;
+
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Resource;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+import com.ebp.domain.Book;
+import com.ebp.exception.BookAddExecption;
+import com.ebp.exception.BookExistsExecption;
+import com.ebp.formbean.QueryBean;
+import com.ebp.service.QueryResult;
+
+@Repository
+public class BookDAO {
+	
+	private static final String RETRIEVE_USER_BOOKS = 
+			"select b from Book b "
+			+ "where b.category_id = ? and b.delete_id=0";
+	private static final String HOW_MANY_ROW = "select count(b.id) from Book b where b.delete_id = 0 and b.category_id = ?";
+	
+	@Resource
+	private HibernateTemplate hibernateTemplate;
+	
+	
+	/**
+	 * @liqiang
+	 * @param id
+	 * @return
+	 * @throws BookExistsExecption 
+	 */
+	public Book getBooksById(int id) throws BookExistsExecption{
+		Book book = null;
+		try{
+			book = hibernateTemplate.get(Book.class, id);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			throw new BookExistsExecption("不存在");
+		}
+		return book;
+	}
+	
+	/**@author liqiang
+	 * 查询所有书籍
+	 * @throws BookExistsExecption 
+	 */
+	public QueryResult<Book> getBook(final int maxLines, final int page) {
+		List<Book> list = new LinkedList<Book>();
+		QueryResult<Book> result = null;
+		
+		final String hql = "select b from Book b where b.delete_id = 0";
+		String hql2 = "select count(b) from Book b where b.delete_id = 0";
+		List list0 = hibernateTemplate.find(hql2);
+		Long count = (Long) list0.get(0);
+		System.out.println(count);
+		list = hibernateTemplate.executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) 
+				throws HibernateException, SQLException{
+				Query query = session.createQuery(hql);
+				query.setFirstResult(page * maxLines);
+				query.setMaxResults(maxLines);
+				return  query.list();
+			}
+		});
+		result = new QueryResult<Book>();
+		result.setList(list);
+		result.setTotalRecord(count.intValue());
+		return result;
+	}
+		
+	/**author liqiang
+	 * 添加书籍
+	 * @throws BookAddExecption 
+	 */
+		public void insert(Book book) throws BookAddExecption{
+			try {
+				hibernateTemplate.save(book);
+			} catch (DataAccessException e) {
+				e.printStackTrace();
+				throw new BookAddExecption("添加错误");
+			}
+		}
+		/**
+		 * author liqiang
+		 * @param name
+		 * @return
+		 * @throws BookExistsExecption
+		 */
+		public Book getBookByName(String name) throws BookExistsExecption{
+		Book book = null;
+		String hql = "select b from Book b where b.name=? and b.delete_id = 0";
+		try {
+			List<Book> list = hibernateTemplate.find(hql,name);
+			if(list == null || list.isEmpty()){
+				//throw new BookExistsExecption("没有此书");
+				return null;
+			}
+			book = list.get(0);
+		} catch (DataAccessException e) {
+			throw new BookExistsExecption("没有此书");
+		}
+		return book;
+		
+	}
+		/**
+		 * @author wupanhua
+		 * @param  pageBean
+		 * @return
+		 * @throws BookExistsExecption 
+		 */
+		public QueryResult<Book> getBooksByCategoryId(final QueryBean queryBean, final int category_id) throws BookExistsExecption {
+			
+			QueryResult<Book> queryResult = new QueryResult<Book>();
+			
+			try{
+				@SuppressWarnings("unchecked")
+				List<Book> list = hibernateTemplate.executeFind(new HibernateCallback() {
+					public Object doInHibernate(Session session) throws HibernateException, SQLException{
+						Query query = session.createQuery(RETRIEVE_USER_BOOKS);
+						query.setFirstResult(queryBean.getstartIndex());
+						query.setMaxResults(queryBean.getPageSize());
+						query.setInteger(0, category_id);
+						return query.list();
+					}
+				});
+				
+				if (list == null || list.isEmpty()) {
+					throw new BookExistsExecption("真尴尬，没书了");
+				}
+				List<Long> count = hibernateTemplate.find(HOW_MANY_ROW, category_id);
+				queryResult.setList(list);
+				long temp = count.get(0);
+				queryResult.setTotalRecord((int)temp);
+				
+				return queryResult; 
+			} catch(DataAccessException e) {
+				e.printStackTrace();
+				throw new BookExistsExecption("查询失败");
+			}
+		}
+}

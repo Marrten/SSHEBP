@@ -1,0 +1,38 @@
+package com.ebp.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.ebp.dao.AdminUserDAO;
+import com.ebp.dao.UserDAO;
+import com.ebp.domain.User;
+import com.ebp.exception.InsertException;
+import com.ebp.exception.UserExistsException;
+import com.ebp.formbean.QueryBean;
+
+@Service
+public class AdminUserService {
+	
+	@Resource
+	private AdminUserDAO adminUserDAO;
+	
+	public PageBean<User> getAllUser(QueryBean queryBean) throws InsertException{
+		final int maxLines = queryBean.getPageSize();//每页显示的最大数量
+		final int page = queryBean.getCurrentPage();//当前页号
+		QueryResult<User> result = adminUserDAO.getAllUser(maxLines,page);
+		PageBean<User> pageBean = new PageBean<User>();
+		pageBean.setList(result.getList());
+		pageBean.setTotalRecord(result.getTotalRecord());
+		pageBean.setCurrentPage(queryBean.getCurrentPage());
+		pageBean.setPageSize(queryBean.getPageSize());
+		return pageBean;
+	}
+	
+//	public User researchUser(User user) throws UserExistsException{
+//		UserDAO userDAO = new UserDAO();
+//		User users = userDAO.researchUser(user);
+//		return users;
+//	}
+
+}

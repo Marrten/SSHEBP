@@ -1,0 +1,20 @@
+package com.ebp.exception;
+
+public class LoginExecption extends Exception{
+
+	private static final long serialVersionUID = 1L;
+
+	public LoginExecption() {
+		super();
+	}
+
+	public LoginExecption(String message) {
+		super(message);
+	}
+
+	public LoginExecption(Throwable cause) {
+		super(cause);
+	}
+	
+
+}

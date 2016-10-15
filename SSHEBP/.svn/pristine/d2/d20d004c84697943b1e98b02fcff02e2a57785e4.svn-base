@@ -1,0 +1,162 @@
+package com.ebp.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class Book implements Serializable {
+	
+	private static final long serialVersionUID = 1280772745876203848L;
+	
+	@Id
+	@GeneratedValue
+	private int id;
+	private String name;
+	private String author;
+	private String descration;
+	private double oldprice;
+	private double price;
+	private String filename;
+	private int amount;
+	private int category_id;
+	private int delete_id;
+	
+	public Book() {
+		super();
+	}
+	
+	public Book(int id, String name, String author, String descration,
+			double oldprice, double price, int amount) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+		this.descration = descration;
+		this.oldprice = oldprice;
+		this.price = price;
+		this.amount = amount;
+	}
+
+
+	public Book(String name, String author, String descration, double oldprice,
+			double price, String filename, int amount, int category_id) {
+		super();
+		this.name = name;
+		this.author = author;
+		this.descration = descration;
+		this.oldprice = oldprice;
+		this.price = price;
+		this.filename = filename;
+		this.amount = amount;
+		this.category_id = category_id;
+	}
+
+	public Book(int id, String name, String author, String descration,
+			double oldprice, double price, String filename, int amount,
+			int category_id) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.author = author;
+		this.descration = descration;
+		this.oldprice = oldprice;
+		this.price = price;
+		this.filename = filename;
+		this.amount = amount;
+		this.category_id = category_id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getDescration() {
+		return descration;
+	}
+
+	public void setDescration(String descration) {
+		this.descration = descration;
+	}
+
+	public double getOldprice() {
+		return oldprice;
+	}
+
+	public void setOldprice(double oldprice) {
+		this.oldprice = oldprice;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public int getCategory_id() {
+		return category_id;
+	}
+
+	public void setCategory_id(int category_id) {
+		this.category_id = category_id;
+	}
+	
+	public int getDelete_id() {
+		return delete_id;
+	}
+
+	public void setDelete_id(int delete_id) {
+		this.delete_id = delete_id;
+	}
+
+	@Override
+	public String toString() {
+		return "Book [id=" + id + ", name=" + name + ", author=" + author
+				+ ", descration=" + descration + ", oldprice=" + oldprice
+				+ ", price=" + price + ", filename=" + filename + ", amount="
+				+ amount + ", category_id=" + category_id + "]";
+	}
+	
+}

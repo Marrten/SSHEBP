@@ -1,0 +1,27 @@
+package com.ebp.exception;
+
+public class DoubleUsernameException extends Exception{
+
+	/**
+	 * 
+	 */
+	public DoubleUsernameException() {
+		super();
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public DoubleUsernameException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	/**
+	 * @param message
+	 */
+	public DoubleUsernameException(String message) {
+		super(message);
+	}
+	
+}

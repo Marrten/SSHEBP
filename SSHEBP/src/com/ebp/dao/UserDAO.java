@@ -1,0 +1,113 @@
+package com.ebp.dao;
+
+
+import java.util.List;
+
+
+
+
+
+import javax.annotation.Resource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.ebp.domain.User;
+import com.ebp.exception.LoginException;
+import com.ebp.exception.RegisterException;
+import com.ebp.exception.UserException;
+import com.ebp.exception.UserExistsException;
+@Repository
+public class UserDAO {
+	
+	@Resource
+	private HibernateTemplate hibernateTemplate;
+	
+	/**@author liqiang
+	 * 向user表插入数据(用户注册)
+	 * @throws RegisterException 
+	 */
+	public void register(User user) throws RegisterException{
+		
+		try{
+			hibernateTemplate.save(user);
+		}catch(DataAccessException e){
+			e.printStackTrace();
+			throw new RegisterException("用户已存在");
+		}
+	}
+	/**@author liqiang
+	 * 查询单个user(登录)
+	 * @throws LoginException 
+	 */
+	public User login(String username, String password) throws LoginException{
+		String hql = "select u from User u where u.username=? and u.password=?";
+		List<User> list = null;
+		User findUser = null;
+		try {
+			list = hibernateTemplate.find(hql, username,password);
+			if(list.size() == 0){
+				throw new LoginException("用户名和密码不匹配");
+			}
+			findUser = list.get(0);
+		} catch (DataAccessException e) {
+			throw new LoginException("系统错误");
+		}
+		return findUser;
+	}
+	/**
+	 * @author liqiang
+	 * @param username
+	 * @return
+	 * @throws UserExistsException
+	 */
+	public User getUserByName(String username) throws UserExistsException{
+		User user = null;
+		List<User> list = null;
+		String hql = "select u from User u where u.username=?";
+		try {
+			list = hibernateTemplate.find(hql, username);
+			if(list == null || list.isEmpty()){
+        		//throw new UserExistsException("用户名不存在");
+        		return null;
+        	}
+				user = list.get(0);
+			} catch (DataAccessException e) {
+			e.printStackTrace();
+			throw new UserExistsException("用户名不存在");
+		}
+		return user;
+	}
+
+	/**
+	 * wangjiafu
+	 * @param id
+	 * @return
+	 * @throws UserExistsException 
+	 */
+	public User getUserById(int id) throws UserExistsException{
+		User user = null;
+		try{
+			user = hibernateTemplate.get(User.class, id);
+			if(user == null){
+				throw new UserExistsException("用户不存在");
+			}
+		} catch (DataAccessException e) {
+			throw new UserExistsException(e.getMessage());
+		}
+		return user;
+	}
+	/**
+	 * @author wupanhua
+	 * @throws UserException 
+	 */
+	public void updateUsers(User user) throws UserException {
+		
+		try {
+			hibernateTemplate.update(user);
+		} catch(DataAccessException ex) {
+			throw new UserException("系统异常,请稍后再试。");
+		}
+	}
+}

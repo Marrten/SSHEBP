@@ -1,0 +1,30 @@
+package com.ebp.dao;
+
+import javax.annotation.Resource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.ebp.domain.Orders;
+import com.ebp.exception.OrdersException;
+
+@Repository
+public class OrdersDAO {
+	@Resource
+	private HibernateTemplate hibernateTemplate;
+	
+	/**
+	 * wangjiafu
+	 * @param order
+	 * @throws OrdersException 
+	 */
+	public void addOrder(Orders order) throws OrdersException{
+		try{
+			hibernateTemplate.save(order);
+		} catch (DataAccessException e) {
+			throw new OrdersException(e.getMessage());
+		}
+	}
+
+}

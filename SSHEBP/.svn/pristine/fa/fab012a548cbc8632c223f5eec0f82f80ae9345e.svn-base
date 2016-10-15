@@ -1,0 +1,71 @@
+package com.ebp.action;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.ebp.domain.Orders;
+import com.ebp.exception.OrdersException;
+import com.ebp.formbean.QueryBean;
+import com.ebp.service.AdminOrdersService;
+import com.ebp.service.PageBean;
+import com.ebp.utils.WebUtil;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+@Namespace(value="/admin")
+@ParentPackage(value="struts-default")
+@Action(value="AdminOrders")
+@Controller
+@Scope("protoType")
+@Results({  
+   @Result(name="success", location="/admin/orders.jsp"), 
+   @Result(name="input", location="/errors/orders.jsp") 
+})
+public class AdminOrdersAction extends ActionSupport {
+
+	private static final long serialVersionUID = -6212752721084723572L;
+	@Resource
+	private AdminOrdersService adminOrdersService;
+
+	@Override
+	public String execute() throws Exception {
+		
+		// 获取request对象
+        ActionContext ctx = ActionContext.getContext(); 
+        HttpServletRequest request = (HttpServletRequest)ctx.get(ServletActionContext.HTTP_REQUEST);
+        
+		QueryBean queryBean = WebUtil.formBean(request, QueryBean.class);
+//		queryBean.setstartIndex(0);
+		queryBean.setPageSize(2);
+//		queryBean.setCurrentPage(0);
+		PageBean<Orders> pageBean = null;
+		try{
+			pageBean = adminOrdersService.getAllOrders(queryBean);
+		}catch(Exception e){
+			throw new OrdersException("订单分页有误");
+		}
+		
+		List<Orders> list =  pageBean.getList();
+		System.out.println(list.isEmpty());
+		//ceshi
+		for (Orders orders : list) {
+			System.out.println(orders.toString());
+		}
+		
+		request.setAttribute("pageBean", pageBean);
+		
+		return SUCCESS;
+	
+	}
+	
+}

@@ -1,0 +1,78 @@
+package com.ebp.dao;
+
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.ebp.domain.User;
+import com.ebp.exception.UserExistsException;
+import com.ebp.service.QueryResult;
+
+@Repository
+public class AdminUserDAO {
+	/**
+	 * @author Chen
+	 * @param maxLines
+	 * @param page
+	 * @return
+	 */
+	@Resource
+	private HibernateTemplate hibernateTemplate;
+	
+	public QueryResult<User> getAllUser(final int maxLines, final int page) {
+		List<User> list = new LinkedList<User>();
+		QueryResult<User> result = null;
+		
+		final String hql = "select u from User u";
+		String hql2 = "select count(u) from User u";
+		List list0 = hibernateTemplate.find(hql2);
+		Long count = (Long) list0.get(0);
+		System.out.println(count);
+		list = hibernateTemplate.executeFind(new HibernateCallback() {
+			public Object doInHibernate(Session session) 
+				throws HibernateException, SQLException{
+				Query query = session.createQuery(hql);
+				query.setFirstResult(page * maxLines);
+				query.setMaxResults(maxLines);
+				return  query.list();
+			}
+		});
+		result = new QueryResult<User>();
+		result.setList(list);
+		result.setTotalRecord(count.intValue());
+		return result;
+	}
+	/**
+	 * @author Chen
+	 * @param user
+	 * @return
+	 * @throws UserExistsException
+	 */
+	public User researchUser(String username) throws UserExistsException{
+		List<User> list = null;
+		String hql = "select u from User u where u.username =?";
+		try {
+			list = hibernateTemplate.find(hql ,username);
+			if(list == null || list.isEmpty()){
+				throw new UserExistsException("用户名不存在");
+			}
+			if(list.size() > 1){
+				throw new UserExistsException("用户名重复");
+			}
+		} catch (DataAccessException e) {
+			throw new UserExistsException("系统错误");
+		}
+		return list.get(0);
+	}
+
+}

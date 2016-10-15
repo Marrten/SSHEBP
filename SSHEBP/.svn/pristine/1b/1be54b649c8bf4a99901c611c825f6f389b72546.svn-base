@@ -1,0 +1,105 @@
+package com.ebp.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class Item implements Serializable{
+
+	private static final long serialVersionUID = 8088926954154729117L;
+	
+	@Id
+	@GeneratedValue
+	private int id;
+	private double price;
+	private int amount;
+	private String order_id;
+	private int book_id;
+	
+	@OneToOne
+	private Book book;
+	
+	public Item() {
+		super();
+	}
+
+	public Item(double price, int amount, String order_id, int book_id) {
+		super();
+		this.price = price;
+		this.amount = amount;
+		this.order_id = order_id;
+		this.book_id = book_id;
+	}
+	
+	public Item(int id, double price, int amount, String order_id, int book_id) {
+		super();
+		this.id = id;
+		this.price = price;
+		this.amount = amount;
+		this.order_id = order_id;
+		this.book_id = book_id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public String getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
+	}
+
+	public int getBook_id() {
+		return book_id;
+	}
+
+	public void setBook_id(int book_id) {
+		this.book_id = book_id;
+	}
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	@Override
+	public String toString() {
+		return "Item [id=" + id + ", price=" + price + ", amount=" + amount
+				+ ", order_id=" + order_id + ", book_id=" + book_id + ", book="
+				+ book + "]";
+	}
+	
+	
+}

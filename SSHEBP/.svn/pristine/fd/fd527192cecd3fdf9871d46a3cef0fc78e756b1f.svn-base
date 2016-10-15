@@ -1,0 +1,24 @@
+package com.ebp.service;
+
+import javax.annotation.Resource;
+import javax.security.auth.login.LoginException;
+
+import org.springframework.stereotype.Service;
+
+import com.ebp.dao.AdminDAO;
+import com.ebp.domain.Adminuser;
+import com.ebp.utils.MD5Util;
+@Service
+public class AdminService {
+	
+	@Resource
+	private AdminDAO adminDAO;
+	
+	public Adminuser getAdminuser(String username, String password) throws LoginException{
+		Adminuser admin = null;
+//		password = MD5Util.getProcessor(password);
+		admin = adminDAO.getAdminuser(username,password);
+		return admin;
+	}
+	
+}

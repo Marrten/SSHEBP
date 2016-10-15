@@ -1,0 +1,180 @@
+<%@ page language="java" import="java.util.*"contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'bookInfo.jsp' starting page</title>
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+<link rel="icon" href="ebp/image/icon.png">
+<link rel="stylesheet" type="text/css" href="ebp/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="ebp/css/duokan.css">
+<script type="text/javascript" src="ebp/js/jquery-3.1.0.js"></script>
+<script type="text/javascript" src="ebp/js/bootstrap.js"></script>
+<style type="text/css">
+.breadnav {
+	font-size: 16px;
+	font-family: 楷体;
+}
+
+.breadnav>span+span:before {
+	color: #CCCCCC;
+	content: "> ";
+	padding: 0 5px;
+}
+
+.shopping {
+	width: 660px;
+	margin: 30px auto;
+}
+
+
+.book-info #p{font-size: 30px; font-weight: bold;}
+.book-info a:link { color:black; text-decoration: none;}
+.book-info a:visited{color:black; text-decoration: none;}
+.book-info a:hover{color:orange; text-decoration: none;}
+.book-info a:active {color:black; text-decoration: none;}
+.book-info .price span{font-size: 20px; font-weight: bold;float: left}
+.book-info .price del{font-size: 20px; color: gray;float: right;}
+
+.book-left{
+	width: 300px;
+	float: left;
+}
+
+.price{
+	width: 280px;
+}
+
+.book-right{
+	width: 350px;
+	float: right;
+	
+}
+
+.book-name{
+	height: 350px;
+}
+
+
+</style>
+</head>
+<body>
+	<!-- 头部分 -->
+	<div class="headbox">
+		<div class="navbox">
+			<div class="nav-left">
+				<ul class="lt-list">
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">小米网</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">MIUI</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">米聊</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">游戏</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a checked" href="#"
+						target="_blank">多看阅读</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">云服务</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">小米网移动版</a></li>
+				</ul>
+			</div>
+
+			<div class="nav-right">
+				<ul class="rt-list">
+					<li class="rt-li"><a href="ebp/login.jsp">登录</a>/<a
+						href="ebp/register.jsp">注册</a></li>
+					<li class="part">|</li>
+					<li class="rt-li shop"><a href="ebp/shoppingcart.jsp">购物车</a></li>
+					<li class="part">|</li>
+					<li class="rt-li myPerson"><a href="ebp/personal.jsp">个人中心</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 主体部分 -->
+	<div class="mbody">
+		<!-- 主体搜索部分 -->
+		<div class="body-top">
+			<div class="logo">
+				<img src="ebp/image/logo.png">
+			</div>
+
+			<div class="serch">
+				<input class="txt" type="text" placeholder="搜索书名或作者..."> <input
+					class="butn" type="button">
+			</div>
+		</div>
+
+		<!-- 主导航部分 -->
+		<div class="main-nav">
+			<ul class="center-nav">
+				<li><a href="servlet/CategoryServlet">首页</a></li>
+				<li><a href="#">榜单</a></li>
+				<li><a href="#">书评</a></li>
+				<li><a href="#">精品.免费</a></li>
+				<li><a href="#">分类</a></li>
+				<li><a href="#">客户端</a></li>
+				<li><a href="#">论坛</a></li>
+			</ul>
+		</div>
+
+		<div class="breadnav">
+			<span>当前位置&nbsp;:&nbsp;首页</span> <span style='color: #CCCCCC;'>书籍信息</span>
+		</div>
+
+		<div class="shopping">
+			<div class="book-info">
+				<div class="book-left">
+					<img src="${book.filename}" width="280px" height="350px">
+					<div class="price">
+						<span>￥${book.price}</span>
+						<del>￥${book.oldprice}</del>
+					</div>
+				</div>
+
+				<div class="book-right">
+					<div class="book-name">
+						<p>
+							<p id="p">${book.name }</p>
+						</p>
+						<p>
+							<label style="font-size: 20px;">作者：</label>
+							<span><font size="5px">${book.author }</font></span>
+						</p>
+						<div style="height: 100px">
+							<p style="font-size: 15px">${book.descration}</p>
+						</div>
+						
+						<p>
+							<label>库存：</label>
+							<span><font>${book.amount}</font></span>
+						</p>
+					</div>
+
+					<div class="bt">
+						<button class="btn btn-info btn-sm" style="float: right;" onclick="buyAtOnce(1)">立即购买</button>
+						<button class="btn btn-info btn-sm" style="margin-left: 150px;" onclick="addBook(1)">加入购物车</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="ebp/js/duokan.js"></script>
+</html>

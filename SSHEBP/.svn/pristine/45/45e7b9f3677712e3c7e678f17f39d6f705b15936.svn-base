@@ -1,0 +1,237 @@
+<%@ page language="java" import="java.util.*"
+	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>购物车</title>
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+
+<link rel="icon" href="ebp/image/icon.png">
+<link rel="stylesheet" type="text/css" href="ebp/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="ebp/css/duokan.css">
+<script type="text/javascript" src="ebp/js/jquery-3.1.0.js"></script>
+<script type="text/javascript" src="ebp/js/bootstrap.js"></script>
+<style type="text/css">
+.breadnav {
+	font-size: 16px;
+	font-family: 楷体;
+}
+
+.breadnav>span+span:before {
+	color: #CCCCCC;
+	content: "> ";
+	padding: 0 5px;
+}
+
+.shopping {
+	width: 960px;
+	margin: 30px auto;
+}
+
+.shopping .numBtn {
+	float: left;
+}
+
+.body-content3 .shopping input {
+	border: 1px solid #DBDBDB;
+	outline-style: inherit;
+	text-align: center;
+}
+</style>
+</head>
+<body>
+	<!-- 头部分 -->
+	<div class="headbox">
+		<div class="navbox">
+			<div class="nav-left">
+				<ul class="lt-list">
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">小米网</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">MIUI</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">米聊</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">游戏</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a checked" href="#"
+						target="_blank">多看阅读</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">云服务</a></li>
+					<li class="part">|</li>
+					<li class="lt-li"><a class="nav-a" href="#" target="_blank">小米网移动版</a></li>
+				</ul>
+			</div>
+
+			<div class="nav-right">
+				<ul class="rt-list">
+					<c:choose>
+	    				<c:when test="${empty user}">
+	    					<li class="rt-li"><a href="ebp/login.jsp">登录</a>/<a href="ebp/register.jsp">注册</a></li>
+	    				</c:when>
+	    						
+	    				<c:otherwise>
+	    					<li class="rt-li"><a href="#">${user.username}</a></li>
+	    				</c:otherwise>
+	    			</c:choose>
+					<li class="part">|</li>
+					<li class="rt-li shop"><a href="ebp/shoppingcart.jsp">购物车</a></li>
+					<li class="part">|</li>
+					<li class="rt-li myPerson"><a href="ebp/personal.jsp">个人中心</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- 主体部分 -->
+	<div class="mbody">
+		<!-- 主体搜索部分 -->
+		<div class="body-top">
+			<div class="logo">
+				<img src="ebp/image/logo.png">
+			</div>
+
+			<div class="serch">
+				<input class="txt" type="text" placeholder="搜索书名或作者..."> <input
+					class="butn" type="button">
+			</div>
+		</div>
+
+		<!-- 主导航部分 -->
+		<div class="main-nav">
+			<ul class="center-nav">
+				<li><a href="ebp/Category.action">首页</a></li>
+				<li><a href="#">榜单</a></li>
+				<li><a href="#">书评</a></li>
+				<li><a href="#">精品.免费</a></li>
+				<li><a href="#">分类</a></li>
+				<li><a href="#">客户端</a></li>
+				<li><a href="#">论坛</a></li>
+			</ul>
+		</div>
+
+		<div class="breadnav">
+			<span>当前位置&nbsp;:&nbsp;首页</span> <span style='color: #CCCCCC;'>购物车</span>
+		</div>
+
+		<div class="shopping">
+			<div class="panel  panel-warning">
+				<div class="panel-heading">
+					<h3 class="panel-title">购物车状态</h3>
+				</div>
+				<c:choose>
+	    			<c:when test="${empty sessionScope.shoppingcart.map}">
+	    				<h3>购物车为空！！！</h3>
+	    				<a href="ebp/Category.action">回到首页</a>
+	    			</c:when>
+	    						
+	    			<c:otherwise>
+					<div class="panel-body">
+						<div class="panel panel-default">
+						
+							<c:forEach items="${sessionScope.shoppingcart.map}" var="entry">
+							<div class="panel-body" style="border-bottom: 1px solid #A9A9A9;">
+								<div class="order number1">
+									<div class="col-md-1">
+										<img src="${ entry.value.book.filename}" alt="" style="width: 64px;" />
+									</div>
+	
+									<div class="col-md-3">
+										<span style="font-size: 16px;font-weight: bold;">${entry.value.book.name}</span><br />
+										<span>${entry.value.book.author}</span>
+										<p style="color: gray; margin-top: 20px;">
+											¥<span class='unit-price'>${entry.value.book.price}</span>
+										</p>
+									</div>
+	
+									<div class="col-md-2">${errors.bookNum }</div>
+	
+									<div class="col-md-3">
+										<div class="btn-group" style="width:180px ">
+											<span class="numBtn"
+												style="font-size: 16px; line-height: 35px;">总件数:&nbsp;</span>
+											<div class="input-group" style="width: 100px;">
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" onclick="ChangeNum(${entry.value.book.id},${entry.value.num}+1)">+</button>
+												</span> 
+												<input type="text" class="form-control" value="${entry.value.num}"
+														 onblur="ChangeNum(${entry.value.book.id},this.value)"> 
+												<span class="input-group-btn">
+													<button class="btn btn-default" type="button" onclick="ChangeNum(${entry.value.book.id},${entry.value.num}-1)">-</button>
+												</span>
+											</div>
+										</div>
+										<p style="margin-top: 20px;font-size: 16px;">
+											总额:<span class='total-amount'>${entry.value.price}</span>
+										</p>
+									</div>
+	
+									<div class="col-md-2" style="text-align: center;">
+										<!-- <button class="btn btn-info">立即支付</button> -->
+									</div>
+	
+									<div class="col-md-1">
+										<span class="glyphicon glyphicon-trash" onclick="DeleteItem(${entry.value.book.id})"></span>
+									</div>
+								</div>
+							</div>
+							</c:forEach>
+						</div>
+						<div>
+							<span style="float: right;">
+								<label>总价：</label>
+								<span><font>${sessionScope.shoppingcart.prices}</font></span>
+							</span><br><br>
+							
+							<button class="btn btn-info" onclick="buyAll()" style="float: right;">书籍购买</button>
+							
+						</div>
+					</div>
+					</c:otherwise>
+				</c:choose>
+				
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+
+	//从购物车删除该书籍
+	function DeleteItem(book_id){
+		if(confirm("确定取消购买该书籍吗")){
+			window.location.href = "ebp/DelBookFromCart.action?book_id="+book_id;
+		}
+	}
+	
+	/* undefined 一个特殊值，通常用于指示变量尚未赋值。对未定义值的引用返回特殊值 undefined */
+	function ChangeNum(book_id,book_num){
+		if(!isNaN(Number(book_num)) && book_num!=""){
+			if(confirm("确定把数量更新为" + book_num + "吗？")){
+				window.location.href = "ebp/ChangeCartNum.action?book_id="+book_id+"&book_num="+book_num;
+			}
+		}else{
+			alert("请输入一个数字");
+			window.location.href = "ebp/shoppingcart.jsp";
+		}
+		
+	}
+
+	function buyAll() {
+		window.location.href = "ebp/Shopping.action";
+	}
+</script>
+</html>

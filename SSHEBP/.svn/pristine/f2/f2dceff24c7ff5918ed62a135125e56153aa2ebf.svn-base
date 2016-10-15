@@ -1,0 +1,17 @@
+package com.ebp.service;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import com.ebp.dao.AdminCategoryDAO;
+import com.ebp.exception.CategoryException;
+
+@Service
+public class AdminCategoryService {
+	@Resource
+	private AdminCategoryDAO adminCategoryDAO;
+	
+	public Map<String, Integer> getCategorys() throws CategoryException{
+		return adminCategoryDAO.getCategorys();
+	}
+	
+}

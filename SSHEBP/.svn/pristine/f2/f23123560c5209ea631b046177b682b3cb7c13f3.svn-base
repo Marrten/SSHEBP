@@ -1,0 +1,110 @@
+package com.ebp.domain;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class Orders implements Serializable {
+
+	private static final long serialVersionUID = -6335079778886960455L;
+	
+	@Id
+	@GeneratedValue
+	private String id;
+	private String orderNum;
+	private Date createTime;
+	private double price;
+	private int user_id;
+	
+	@OneToMany(cascade={CascadeType.ALL})
+	private List<Item> items = new ArrayList<Item>();
+	
+	public Orders() {
+		super();
+	}
+
+	public Orders(String orderNum, Date createTime, double price,
+			int user_id) {
+		super();
+		this.orderNum = orderNum;
+		this.createTime = createTime;
+		this.price = price;
+		this.user_id = user_id;
+	}
+	
+	public Orders(String id, String orderNum, Date createTime, double price,
+			int user_id) {
+		super();
+		this.id = id;
+		this.orderNum = orderNum;
+		this.createTime = createTime;
+		this.price = price;
+		this.user_id = user_id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getOrderNum() {
+		return orderNum;
+	}
+
+	public void setOrderNum(String orderNum) {
+		this.orderNum = orderNum;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+
+	public List<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(List<Item> items) {
+		this.items = items;
+	}
+
+	@Override
+	public String toString() {
+		return "Orders [id=" + id + ", orderNum=" + orderNum + ", createTime="
+				+ createTime + ", price=" + price + ", user_id=" + user_id
+				+ ", items=" + items + "]";
+	}
+	
+}

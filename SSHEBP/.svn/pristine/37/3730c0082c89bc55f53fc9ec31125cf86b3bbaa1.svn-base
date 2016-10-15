@@ -1,0 +1,19 @@
+package com.ebp.exception;
+
+public class UserException extends Exception {
+
+	private static final long serialVersionUID = 1206650911368126614L;
+
+	public UserException() {
+		super();
+	}
+
+	public UserException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public UserException(String message) {
+		super(message);
+	}
+	
+}

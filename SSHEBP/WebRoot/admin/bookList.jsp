@@ -1,0 +1,245 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+	String uploadPath = getServletContext().getRealPath("/images/");
+	//out.print(uploadPath);
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>书籍管理页面</title>
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="This is my page">
+<link rel="icon" href="admin/image/icon.png">
+<link rel="stylesheet" type="text/css" href="admin/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="admin/css/manager.css">
+<script type="text/javascript" src="admin/js/jquery-3.1.0.js"></script>
+<script type="text/javascript" src="admin/js/bootstrap.js"></script>
+<script type="text/javascript" src="admin/js/manager.js"></script>
+<style type="text/css">
+/* -- 内容二:书籍管理 -- */
+.content-collection {
+	width: 955px;
+	height: 395px;
+	margin-top: 20px;
+}
+
+.collection-img a {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.collection-img a:link {
+	color: black;
+	text-decoration: none;
+}
+
+.collection-img a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+.collection-img a:hover {
+	color: orange;
+	text-decoration: none;
+}
+
+.collection-img a:active {
+	color: black;
+	text-decoration: none;
+}
+
+.collection-img p span {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.collection-img p del {
+	font-size: 12px;
+	color: gray;
+}
+
+.collection-img .collection {
+	width: 285px;
+	height: 155px;
+	margin-top: 30px;
+	margin-left: 30px;
+	float: left;
+}
+
+.collection-img .center,.collection-img .right {
+	border-left: 1px solid #D8D8D8;
+	padding-left: 10px;
+}
+
+.collection .left-img {
+	width: 96px;
+	height: 155px;
+	float: left;
+}
+
+.collection .right-button {
+	width: 170px;
+	height: 155px;
+	float: right;
+}
+
+.collection .right-button .information {
+	height: 120px;
+}
+.manager-button{
+	 float:right;  
+	 margin-top: -100px; 
+	 margin-left:100px;
+	/* padding-bottom:100px; */
+}
+#modify{}
+
+</style>
+</head>
+<body>
+	<!-- 头部分 -->
+    <div class="headbox">
+        <div class="nav-right">
+          <ul class="rt-list">
+            <c:choose>
+	    		<c:when test="${empty admin}">
+	    			<li class="rt-li"><a href="admin/adminLogin.jsp">登录</a></li>
+	    		</c:when>
+	    						
+	    		<c:otherwise>
+	    			<li class="rt-li"><a href="#">${admin.username}</a></li>
+	    		</c:otherwise>
+	    	</c:choose>
+          </ul>
+        </div>
+    </div>	
+
+	<!-- 搜索导航部分 -->
+	<!-- 主体搜索部分 -->
+	<div class="mbody">
+		<div class="body-top">
+			<div class="logo">
+				<img src="admin/image/logo.png">
+			</div>
+		</div>
+
+
+		<!-- 主导航部分 -->
+		<div class="main-nav">
+			<ul class="center-nav">
+				<li class="checked"><a href="servlet/CategoryServlet">首页</a></li>
+				<li><a href="#">榜单</a></li>
+				<li><a href="#">书评</a></li>
+				<li><a href="#">精品.免费</a></li>
+				<li><a href="#">分类</a></li>
+				<li><a href="#">客户端</a></li>
+				<li><a href="#">论坛</a></li>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="manager-body body1">
+		<!-- 管理导航项 -->
+		<div class="manager-nav">
+			<ul class="nav nav-pills nav-stacked">
+				<li><h3>管理项</h3></li>
+				<li value="1"><a href="admin/AdminUserList.action">用户管理</a></li>
+				<li class="act" value="2"><a href="admin/BookList">书籍管理</a></li>
+				<li value="3"><a href="admin/AdminOrders.action">订单管理</a></li>
+			</ul>
+		</div>
+
+		<!-- 管理项对应的内容 -->
+		<!-- 内容二:书籍管理 -->
+		<div class="manager-content2">
+			<div class="panel panel default">
+			<div class="panel-heading">
+				书籍管理
+				<div style="float: right;">
+					<a href="admin/AdminCategory" style="color:blue;"><button class="btn btn-success addrepertory">
+					添加<span class="glyphicon glyphicon-plus"></span>
+					</button></a>
+				</div>
+
+				<div class="col-md-4" style="float: right;  margin-bottom:10px;">
+				<form method="post" action="admin/FindBook">
+					<div class="input-group">
+						<input type="text" class="form-control"  name="name" placeholder='输入书名'>
+						<span class="input-group-btn">
+						<input class="btn btn-info" type="submit" value="搜索">
+						</span>
+					</div>
+				</form>
+				</div>
+			</div>
+			<div class="panel-body">
+		   	   	    <ul class="list-group">
+		   	   	    	<c:forEach items="${pageBean.list}" var="book">
+		   	   	    		<li class="list-group-item">
+		   	   	    		   <div class="manager-img">
+		   	   	    		   	   <img src="${book.filename}"> 
+		   	   	    		   	   <div class="manager-description">
+		   	   	    		   	   	  <p>${book.name}</p>
+		   	   	    		   	   	  <p class="repertory">库存:<span>${book.amount}</span></p>
+		   	   	    		   	   </div>
+		   	   	    		   <div class="manager-button">
+		   	   	    		   	   <a  href="admin/loadBook.jsp?id=${book.id}" class="change-btn btn btn-info" id="modify">修改</a>
+		   	   	    		   	   <a  href="admin/DeleteBook?id=${book.id}" class="btn btn-info " id="delete">下架</a>
+		   	   	    		   </div>
+		   	   	    		   </div>
+		   	   	    		</li>
+		   	   	    	</c:forEach>
+					</ul>
+				</div>
+				</div>
+				</div> 	
+								<!--  分页  -->
+						<div class="person-bottom"
+									style="padding-top: 50px; float: right;">
+							<p class='bottom-txt' style=''>共${pageBean.totalPage}页  共${pageBean.totalRecord}条记录 </p>  
+						<button class="btn btn-default"><a href="javascript:void(0)" onclick="gotoPage(${pageBean.previousPage})">上一页</a></button>
+							<c:forEach items="${pageBean.pageBar}" var="pageNum">
+									<a href="javascript:void(0)" onclick="gotoPage(${pageNum})">
+									<c:if test="${pageBean.currentPage == pageNum}">
+										<button  class="btn btn-default"><font color="red">${pageBean.currentPage}</font></button>
+									</c:if>
+									<c:if test="${pageBean.currentPage ne  pageNum}">
+										<button  class="btn btn-default">${pageNum}</button>
+									</c:if>
+									</a>
+							</c:forEach>
+							<button class="btn btn-default"><a href="javascript:void(0)" onclick="gotoPage(${pageBean.nextPage})">下一页</a></button>
+							 	<span class="bottom-txt"> 至<input type="text" id="currentPage" onBlur="checkAmount(this)" name="currentPage" value="${pageBean.currentPage}" style="width: 40px; height: 35px; text-align:center;"/>页</span>
+								 <button class="btn btn-default" onclick='gotoPage(document.getElementById("currentPage").value)'>确定</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+</body>
+<script type="text/javascript">
+	function gotoPage(currentPage){
+			window.location.href="admin/BookList?currentPage=" + currentPage;
+			}
+	function checkAmount(obj){
+		var re = /^[0-9]*[1-9][0-9]*$/;
+		if(re.test($("#currentPage").val())){
+		}else{
+			alert("请输入正确的页码");
+		}
+	}
+</script>
+	
+</html>

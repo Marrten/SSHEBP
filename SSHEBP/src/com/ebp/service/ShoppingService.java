@@ -1,0 +1,82 @@
+package com.ebp.service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ebp.domain.Book;
+import com.ebp.domain.Item;
+import com.ebp.domain.Orders;
+import com.ebp.domain.User;
+import com.ebp.exception.BalanceNotEnoughException;
+import com.ebp.exception.BookExistsExecption;
+import com.ebp.exception.BookNumNotEnoughException;
+import com.ebp.exception.ItemInsertException;
+import com.ebp.exception.OrdersException;
+import com.ebp.exception.UserExistsException;
+import com.ebp.utils.CreateUUID;
+
+@Service
+@Transactional
+public class ShoppingService {
+	@Resource
+	private BookService bookService;
+	@Resource
+	private OrdersService ordersService;
+	@Resource
+	private UserService userService;
+	@Resource
+	private ItemService itemService;
+	
+	@Transactional(propagation=Propagation.REQUIRED,rollbackFor={UserExistsException.class, 
+			OrdersException.class, BookNumNotEnoughException.class, BalanceNotEnoughException.class, ItemInsertException.class,BookExistsExecption.class})
+	public void shoppingBook(ShoppingCart shoppingcart,User user) 
+			throws UserExistsException, OrdersException, BookNumNotEnoughException, BalanceNotEnoughException, ItemInsertException, BookExistsExecption{
+		
+		//书的数量减去出售的数量
+		Map<Integer,CartItem> map = shoppingcart.getMap();
+		Set<Entry<Integer, CartItem>> set = map.entrySet();
+		Book bookData = null;
+		for (Entry<Integer, CartItem> entry : set) {
+			Book book = entry.getValue().getBook();
+			
+			int num = book.getAmount() - entry.getValue().getNum();
+			if(num<0){
+				throw new BookNumNotEnoughException("书籍存货不足");
+			}
+			bookData = bookService.getBookById(book.getId());
+			bookData.setAmount(num);
+		}
+		
+		//用户余额减去总价
+		if(shoppingcart.getPrices() > user.getBalance()){
+			throw new BalanceNotEnoughException("余额不足");
+		}
+		double balance = user.getBalance() - shoppingcart.getPrices();
+		User userData = userService.getUserById(user.getId());
+		userData.setBalance(balance);
+		
+		//新建订单
+		String id = CreateUUID.getUUID();
+		java.util.Date date = new java.util.Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String orderNum = sdf.format(date) + date.getTime();
+		Date createTime = new Date();
+		Orders order = new Orders(id, orderNum, createTime, shoppingcart.getPrices(), userData);
+		
+		//新建item
+		for (Entry<Integer, CartItem> entry : set) {
+			Item item = new Item(entry.getValue().getPrice(), entry.getValue().getNum(), bookData ,order);
+			order.getItems().add(item);
+		}
+		ordersService.add(order);
+	}
+}

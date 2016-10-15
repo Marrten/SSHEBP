@@ -1,0 +1,74 @@
+package com.ebp.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ebp.dao.BookDAO;
+import com.ebp.domain.Book;
+import com.ebp.exception.BookAddExecption;
+import com.ebp.exception.BookExistsExecption;
+import com.ebp.exception.BookNumNotEnoughException;
+import com.ebp.exception.BookUpdateExecption;
+import com.ebp.formbean.QueryBean;
+@Service
+public class BookService {
+	
+	@Resource
+	private BookDAO bookDAO;
+	
+	/**
+	 * 
+	 * wangjiafu
+	 * @throws BookExistsExecption 
+	 */
+	public Book getBookById(int id) throws BookExistsExecption {
+		Book book = bookDAO.getBooksById(id);
+		return book;
+	}
+
+	/**
+	 * @author liqiang
+	 */
+	public PageBean<Book> listAll(QueryBean queryBean) throws BookExistsExecption {
+			QueryResult<Book> result = bookDAO.getAllBook(queryBean);
+			PageBean<Book> pageBean = new PageBean<Book>();
+			pageBean.setList(result.getList());
+			pageBean.setTotalRecord(result.getTotalRecord());
+			pageBean.setCurrentPage(queryBean.getCurrentPage());
+			pageBean.setPageSize(queryBean.getPageSize());
+			return pageBean;
+	}
+	/**
+	 * @author liqiang
+	 */
+	public void addBook(Book book) throws BookAddExecption{
+		bookDAO.insert(book);
+	}
+	/**
+	 * @author liqiang
+	 */
+	public Book findBook(String name) throws BookExistsExecption{
+		Book book = bookDAO.getBookByName(name);
+		return book;
+	}
+	/**
+	 * @author liqiang
+	 */
+	public void update(Book book) throws BookUpdateExecption{
+		bookDAO.updateBook(book);
+	}
+	
+	/**
+	 * @author liqiang
+	 * @throws BookNumNotEnoughException 
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={BookExistsExecption.class})
+	public void dropBOOK(int id) throws BookExistsExecption, BookNumNotEnoughException{
+		Book book = bookDAO.getBooksById(id);
+		book.setDelete_id(1);
+		
+	}
+}

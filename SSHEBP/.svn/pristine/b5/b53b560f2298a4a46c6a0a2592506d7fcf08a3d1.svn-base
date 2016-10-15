@@ -1,0 +1,101 @@
+package com.ebp.domain;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table
+public class Item implements Serializable{
+
+	private static final long serialVersionUID = 8088926954154729117L;
+	
+	@Id
+	@GeneratedValue
+	private int id;
+	private double price;
+	private int amount;
+	
+	@OneToOne
+	private Book book;
+	
+	@ManyToOne
+	private Orders orders;
+	
+	public Item() {
+		super();
+	}
+
+	public Item(double price, int amount) {
+		super();
+		this.price = price;
+		this.amount = amount;
+	}
+	
+	public Item(int id, double price, int amount) {
+		super();
+		this.id = id;
+		this.price = price;
+		this.amount = amount;
+	}
+
+	/**
+	 * 
+	 * @param wangjiafu
+	 */
+	public Item(double price, int amount, Book book, Orders orders) {
+		super();
+		this.price = price;
+		this.amount = amount;
+		this.book = book;
+		this.orders = orders;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
+
+	public Orders getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Orders orders) {
+		this.orders = orders;
+	}
+
+	
+}

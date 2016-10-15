@@ -1,0 +1,53 @@
+package com.ebp.dao;
+
+
+import java.sql.SQLException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.ebp.domain.Category;
+import com.ebp.exception.CategoryException;
+
+@Repository
+public class AdminCategoryDAO {
+	@Resource
+	private HibernateTemplate hibernateTemplate;
+public Map<String, Integer> getCategorys() throws CategoryException{
+		
+		List<Category> list = null;
+		String hql = "select c from Category c where c.parent.id is null";
+		try{
+			list = hibernateTemplate.find(hql);
+		} catch (DataAccessException e) {
+			throw new CategoryException("SQL异常");
+		}
+		
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		for (Category category : list) {
+			int id = category.getId();
+			String name = category.getName();
+			map.put(name, id);
+		}
+		return map;
+	}
+	public List<Category> findName(int id) throws CategoryException{
+	String hql = "select c from Category c where c.parent.id = ?";
+	List<Category>  list = null;
+	try {
+		list = hibernateTemplate.find(hql,id);
+	} catch (DataAccessException e) {
+		e.printStackTrace();
+		throw new CategoryException("SQL异常");
+	}
+	return list;
+}
+	
+}

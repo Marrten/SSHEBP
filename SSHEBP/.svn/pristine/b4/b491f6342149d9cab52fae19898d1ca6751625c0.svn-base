@@ -1,0 +1,108 @@
+package com.ebp.service;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ebp.dao.BookDAO;
+import com.ebp.domain.Book;
+import com.ebp.exception.BookAddExecption;
+import com.ebp.exception.BookExistsExecption;
+import com.ebp.exception.BookNumNotEnoughException;
+import com.ebp.exception.InsertException;
+import com.ebp.formbean.QueryBean;
+@Service
+@Transactional
+public class BookService {
+	
+	@Resource
+	private BookDAO bookDAO;
+	
+	/**
+	 * 
+	 * wangjiafu
+	 * @throws BookNumNotEnoughException 
+	 * @throws BookExistsExecption 
+	 * @throws BookExistsExecption 
+	 */
+	public Book getBookById(int id) throws BookNumNotEnoughException, BookExistsExecption {
+		Book book = bookDAO.getBooksById(id);
+		return book;
+	}
+
+	/**
+	 * @author liqiang
+	 */
+	public PageBean<Book> getBooks(QueryBean queryBean) throws InsertException{
+		final int maxLines = queryBean.getPageSize();//每页显示的最大数量
+		final int page = queryBean.getCurrentPage();//当前页号
+		QueryResult<Book> result = bookDAO.getBook(maxLines,page);
+		PageBean<Book> pageBean = new PageBean<Book>();
+		pageBean.setList(result.getList());
+		pageBean.setTotalRecord(result.getTotalRecord());
+		pageBean.setCurrentPage(queryBean.getCurrentPage());
+		pageBean.setPageSize(queryBean.getPageSize());
+		return pageBean;
+	}
+	/**
+	 * @author liqiang
+	 */
+	public void addBook(Book book) throws BookAddExecption{
+		bookDAO.insert(book);
+	}
+	/**
+	 * @author liqiang
+	 */
+	public Book findBook(String name) throws BookExistsExecption{
+		Book book = bookDAO.getBookByName(name);
+		return book;
+	}
+	/**
+	 * @author liqiang
+	 * @throws BookExistsExecption 
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={BookExistsExecption.class})
+	public void update(Book book) throws  BookExistsExecption{
+		Book books = bookDAO.getBooksById(book.getId());
+		
+		books.setName(book.getName());
+		books.setAmount(book.getAmount());
+		books.setAuthor(book.getAuthor());
+		books.setDescration(book.getDescration());
+		books.setOldprice(book.getOldprice());
+		books.setPrice(book.getPrice());
+	}
+	
+	/**
+	 * @author liqiang
+	 * @throws BookNumNotEnoughException 
+	 */
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor={BookExistsExecption.class})
+	public void dropBOOK(int id) throws BookExistsExecption, BookNumNotEnoughException{
+		Book book = bookDAO.getBooksById(id);
+		book.setDelete_id(1);
+	}
+	/**
+	 * @author wupanhua
+	 * @param queryBean
+	 * @param category_id
+	 * @return
+	 * @throws BookExistsExecption
+	 */
+	public PageBean<Book> getBooksByCategoryId(QueryBean queryBean, int category_id) throws BookExistsExecption {
+		// 获取用户订单
+		QueryResult<Book> queryResult = bookDAO.getBooksByCategoryId(queryBean, category_id);
+		
+		PageBean<Book> pageBean = new PageBean<Book>();
+		pageBean.setList(queryResult.getList());
+		pageBean.setPageSize(queryBean.getPageSize());
+		pageBean.setTotalRecord(queryResult.getTotalRecord());
+		pageBean.setCurrentPage(queryBean.getCurrentPage());
+		
+		return pageBean;
+	}
+}
